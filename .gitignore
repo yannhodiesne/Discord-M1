@@ -43,6 +43,15 @@ node_modules/
 *.crt
 *.key
 
+# yarn berry
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
 # Force yarn usage
 package-lock.json
 
