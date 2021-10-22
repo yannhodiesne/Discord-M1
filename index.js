@@ -1,4 +1,5 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { hasScreenCapturePermission, hasPromptedForPermission, openSystemPreferences } = require('mac-screen-capture-permissions');
 const fs = require('fs');
 
 // https://discuss.atom.io/t/how-to-catch-the-event-of-clicking-the-app-windows-close-button-in-electron-app/21425
@@ -113,3 +114,9 @@ app.on('activate', () => {
 /* 'before-quit' is emitted when Electron receives 
  * the signal to exit and wants to start closing windows */
 app.on('before-quit', () => willQuitApp = true);
+
+ipcMain.on('checkScreenPermission', async () => {
+    if (!hasScreenCapturePermission()) {
+        await openSystemPreferences();
+    }
+});

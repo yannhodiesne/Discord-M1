@@ -1,18 +1,22 @@
 # Discord-M1
 
-> This project is a fork of [Discord-M1](https://github.com/17hoehbr/Discord-M1), with support for screen sharing, and tweaks to keep the native application look on macOS.
+> This project is a fork of [Discord-M1](https://github.com/17hoehbr/Discord-M1), with support for screen sharing, and tweaks to keep the native application's look on macOS.
 
 An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://github.com/17hoehbr)'s work.
 
 Based on the original author's [apple-music-electron](https://github.com/17hoehbr/apple-music-electron) project for Linux.
 
-# Downloading a pre-built release
+# How to install
 
- - Head to the [releases page](https://github.com/yannhodiesne/Discord-M1/releases) and download the latest version.
- - Open the .dmg file and copy the application to your Applications folder.
- - Open a terminal, and run `sudo xattr -rd com.apple.quarantine /Applications/Discord.app` then enter you password and press Enter.
+ 1. Head to the [releases page](https://github.com/yannhodiesne/Discord-M1/releases) and download the latest version.
+ 2. Open the .dmg file and copy the application **anywhere but not inside your Applications folder**.
+ 3. Open a terminal, and type `sudo xattr -rd com.apple.quarantine ` (with a space at the end), then drag the Discord application onto the terminal before pressing Enter.
+> Running a command starting with `sudo` is usually a very bad idea, but I promise this one is safe.
+ 4. Enter your password, and press Enter.
+ 5. Enjoy !
 
-> This last step is mandatory because I did not pay Apple's 99$ fee to sign the application. Running a command starting with `sudo` is usually a very bad idea, but I promise this one is safe.
+> Steps 2 and 3 are mandatory because I did not pay Apple's 99$ fee to sign the application.  
+> Putting the application inside the Applications folder will break the screen sharing feature, as Apple restricts the permissions of unsigned apps.
 
 # Building from source
 
@@ -41,6 +45,23 @@ Requirements: Have Xcode installed
 Alternatively you can run the app directly from source using
 ```$ yarn start```
 
+# FAQ
+
+## Why is macOS is telling me the application is damaged and cannot be opened?
+
+It happens because you dit not run, or made a mistake when running the terminal command inside the *How to install* section.
+Follow the instructions inside the *How to install* section, and feel free to blame Apple for their developer's fee.
+
+## Why is the share screen button opening the System Preferences but I still cannot share my screen?
+
+It happens because you moved Discord inside the Applications folder.  
+Apple is restricting the permissions of unsigned applications inside of this folder, to ensure only trusted ones can interact with some parts of the system.  
+Follow the instructions inside the *How to install* section, and feel free to blame Apple for their developer's fee.
+
+## When right-clicking on a message, nothing is happening!
+
+Unfortunately, right-clicking on a message only works when Discord is displayed in English.  
+I did not find a way to make right-clicking work with other languages, but if you want to tackle this bug, feel free to contribute by opening an issue or a pull request!
 
 # Credits
 

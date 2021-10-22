@@ -1,7 +1,6 @@
-const { desktopCapturer } = require('electron');
+const { desktopCapturer, ipcRenderer } = require('electron');
 
-window.navigator.mediaDevices.getDisplayMedia = () => {
-  return new Promise(async (resolve, reject) => {
+openScreenSelection = async (resolve, reject) => {
     try {
       const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] });
 
@@ -118,5 +117,12 @@ window.navigator.mediaDevices.getDisplayMedia = () => {
       console.error('Error displaying desktop capture sources:', err);
       reject(err);
     }
+};
+
+window.navigator.mediaDevices.getDisplayMedia = () => {
+  return new Promise(async (resolve, reject) => {
+    ipcRenderer.send('checkScreenPermission', {});
+
+    await openScreenSelection(resolve, reject);
   });
 }
