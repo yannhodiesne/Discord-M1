@@ -5,7 +5,15 @@
 An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://github.com/17hoehbr)'s work.
 
 Based on the original author's [apple-music-electron](https://github.com/17hoehbr/apple-music-electron) project for Linux.
-  
+
+# Downloading a pre-built release
+
+ - Head to the [releases page](https://github.com/yannhodiesne/Discord-M1/releases) and download the latest version.
+ - Open the .dmg file and copy the application to your Applications folder.
+ - Open a terminal, and run `sudo xattr -rd com.apple.quarantine /Applications/Discord.app` then enter you password and press Enter.
+
+> This last step is mandatory because I did not pay Apple's 99$ fee to sign the application. Running a command starting with `sudo` is usually a very bad idea, but I promise this one is safe.
+
 # Building from source
 
 Requirements: Have Xcode installed
