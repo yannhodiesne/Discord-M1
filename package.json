@@ -1,6 +1,6 @@
 {
   "name": "Discord",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "main": "index.js",
   "description": "Discord Native for M1 Macs",
   "author": {
@@ -8,13 +8,20 @@
     "email": "17hoehbr@gmail.com",
     "url": "https://github.com/17hoehbr/Discord-m1"
   },
-  "homepage": "https://github.com/17hoehbr/Discord-m1",
+  "contributors": [
+    {
+      "name": "Yann Hodiesne",
+      "email": "yann.hodiesne@viacesi.fr",
+      "url": "https://github.com/yannhodiesne/Discord-m1"
+    }
+  ],
+  "homepage": "https://github.com/yannhodiesne/Discord-m1",
   "keywords": [
     "Discord"
   ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://github.com:17hoehbr/Discord-m1"
+    "url": "git+ssh://github.com:yannhodiesne/Discord-m1"
   },
   "license": "MIT",
   "scripts": {
@@ -24,9 +31,9 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "electron-prompt": "1.6.2",
     "electron-updater": "4.3.9",
     "electron-window-state": "5.0.3",
-    "electron-prompt": "1.6.2",
     "express": "4.17.1",
     "express-asset-file-cache-middleware": "1.3.0",
     "v8-compile-cache": "2.3.0"
@@ -40,18 +47,24 @@
   "build": {
     "appId": "Discord-m1",
     "extends": null,
-    "extraResources": ["inject.js"],
+    "extraResources": [
+      "discord-native-features.js",
+      "discord-platform-osx.js"
+    ],
     "mac": {
-      "category" : "public.app-category.social-networking",
+      "category": "public.app-category.social-networking",
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
       ],
-      "icon" : "icon.icns",
-      "darkModeSupport" : "true",
+      "icon": "icon.icns",
+      "darkModeSupport": "true",
       "publish": [
         {
           "provider": "github",
-          "owner": "17hoehbr",
+          "owner": "yannhodiesne",
           "repo": "Discord-m1"
         }
       ]

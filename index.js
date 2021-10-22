@@ -29,15 +29,27 @@ function createWindow() {
         'height': mainWindowState.height,
         minWidth: 350,
         minHeight: 100,
+        titleBarStyle: 'hiddenInset',
         // hide until ready
         show: false,
         // Enables DRM
         webPreferences: {
             plugins: true,
             nodeIntegration: false,
-            contextIsolation: true,
+            contextIsolation: false,
             sandbox: true
         }
+    });
+
+    // Load the screen sharing polyfill
+    win.webContents.session.setPreloads([path.join(__dirname, 'preload-get-display-media-polyfill.js')]);
+
+    // Bypass browser permission checks
+    win.webContents.session.setPermissionCheckHandler(async (webContents, permission, details) => {
+        return true;
+    });
+    win.webContents.session.setPermissionRequestHandler(async (webContents, permission, callback, details) => {
+        callback(true);
     });
 
     // Let us register listeners on the window, so we can update the state
@@ -50,13 +62,20 @@ function createWindow() {
     win.setAutoHideMenuBar(true);
     
     win.loadURL("https://discord.com/app",
-    {userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'});
+    {userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'});
 
     // Inject custom JavaScript
-    let injectFilePath = path.join(process.resourcesPath, 'inject.js');
-    if (!fs.existsSync(injectFilePath)) injectFilePath = './inject.js';
-    fs.readFile(injectFilePath, 'utf-8', (_, data) => {
-        win.webContents.executeJavaScript(data);
+    const filesToInject = ['discord-native-features.js', 'discord-platform-osx.js'];
+
+    filesToInject.forEach((file) => {
+        let injectFilePath = path.join(process.resourcesPath, file);
+
+        if (!fs.existsSync(injectFilePath)) 
+            injectFilePath = `./${file}`;
+        
+        fs.readFile(injectFilePath, 'utf-8', (_, data) => {
+            win.webContents.executeJavaScript(data);
+        });
     });
 
     win.webContents.on('new-window', (e, url) => {
