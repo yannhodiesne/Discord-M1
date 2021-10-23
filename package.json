@@ -28,7 +28,8 @@
     "postinstall": "electron-builder install-app-deps",
     "start": "electron --disable-gpu .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "publish": "electron-builder --publish always"
   },
   "dependencies": {
     "electron-prompt": "1.7.0",
@@ -43,6 +44,7 @@
     "electron": "13.6.0",
     "electron-builder": "22.14.5",
     "electron-webpack": "2.8.2",
+    "eslint": "^8.1.0",
     "webpack": "4.46.0"
   },
   "build": {
