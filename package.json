@@ -49,7 +49,8 @@
     "appId": "Discord-m1",
     "extends": null,
     "extraResources": [
-      "discord-native-features.js",
+      "discord-badge-count.js",
+      "discord-context-menu.js",
       "discord-platform-osx.js"
     ],
     "mac": {

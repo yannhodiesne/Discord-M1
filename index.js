@@ -42,8 +42,13 @@ function createWindow() {
         }
     });
 
+    win.webContents.openDevTools();
+
     // Load the screen sharing polyfill
-    win.webContents.session.setPreloads([path.join(__dirname, 'preload-get-display-media-polyfill.js')]);
+    win.webContents.session.setPreloads([
+        path.join(__dirname, 'preload-badge-count.js'),
+        path.join(__dirname, 'preload-get-display-media-polyfill.js'),
+    ]);
 
     // Bypass browser permission checks
     win.webContents.session.setPermissionCheckHandler(async (webContents, permission, details) => {
@@ -66,7 +71,7 @@ function createWindow() {
     {userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'});
 
     // Inject custom JavaScript
-    const filesToInject = ['discord-native-features.js', 'discord-platform-osx.js'];
+    const filesToInject = ['discord-badge-count.js', 'discord-context-menu.js', 'discord-platform-osx.js'];
 
     filesToInject.forEach((file) => {
         let injectFilePath = path.join(process.resourcesPath, file);
@@ -119,4 +124,8 @@ ipcMain.on('checkScreenPermission', async () => {
     if (!hasScreenCapturePermission()) {
         await openSystemPreferences();
     }
+});
+
+ipcMain.on('updateBadgeCount', (e, args) => {
+    app.dock.setBadge(String(args.count));
 });
