@@ -42,8 +42,6 @@ function createWindow() {
         }
     });
 
-    win.webContents.openDevTools();
-
     // Load the screen sharing polyfill
     win.webContents.session.setPreloads([
         path.join(__dirname, 'preload-badge-count.js'),
