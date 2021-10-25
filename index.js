@@ -1,6 +1,7 @@
 const { app, BrowserWindow, shell, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { hasScreenCapturePermission, openSystemPreferences } = require('mac-screen-capture-permissions');
+const { autoUpdater } = require('electron-updater');
 
 const fs = require('fs');
 const path = require('path');
@@ -8,13 +9,6 @@ const path = require('path');
 // https://discuss.atom.io/t/how-to-catch-the-event-of-clicking-the-app-windows-close-button-in-electron-app/21425
 let win;
 let willQuitApp;
-
-// Check for updates
-const { autoUpdater } = require('electron-updater');
-
-app.on('ready', function () {
-	autoUpdater.checkForUpdatesAndNotify();
-});
 
 // Create window
 function createWindow() {
@@ -114,7 +108,20 @@ function createWindow() {
 	});
 }
 
+autoUpdater.on('update-available', () => {
+	shell.openExternal('https://github.com/yannhodiesne/Discord-M1/releases');
+});
+
 app.whenReady().then(() => {
+	autoUpdater.autoDownload = false;
+	autoUpdater.autoInstallOnAppQuit = false;
+
+	autoUpdater.checkForUpdates();
+
+	setInterval(() => {
+		autoUpdater.checkForUpdates();
+	}, 60 * 60 * 1000);
+	
 	createWindow();
 });
 
