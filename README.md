@@ -58,16 +58,11 @@ It happens because you moved Discord inside the Applications folder.
 Apple is restricting the permissions of unsigned applications inside of this folder, to ensure only trusted ones can interact with some parts of the system.  
 Follow the instructions inside the *How to install* section, and feel free to blame Apple for their developer's fee.
 
-## When right-clicking on a message, nothing is happening!
-
-Unfortunately, right-clicking on a message only works when Discord is displayed in English.  
-I did not find a way to make right-clicking work with other languages, but if you want to tackle this bug, feel free to contribute by opening an issue or a pull request!
-
 # Credits
 
 Made with [Electron-Builder](https://www.electron.build/).
 
-Kudos to [17hoehbr](https://github.com/17hoehbr) for his original work on an M1-compliant Discord client.
+Kudos to [17hoehbr](https://github.com/17hoehbr) for his original work on an M1-friendly Discord client.
 
 Screen sharing support would not have been possible without these ressources and their authors :
  - [Hacking Together a Native Version of Discord for M1 Macs](https://rthr.me/2021/03/discord-native-apple-silicon/)
