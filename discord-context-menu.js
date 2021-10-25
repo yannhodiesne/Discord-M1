@@ -27,10 +27,22 @@ document.body.addEventListener('contextmenu', e => {
 	}
 
 	const moreButton = isImageWrapper
-		? document.querySelector('[aria-label=\'More\']')
-		: message.querySelector('[aria-label=\'More\']');
+		? document.querySelector('.wrapper-2aW0bm').lastElementChild
+		: message.querySelector('.wrapper-2aW0bm').lastElementChild;
 
 	moreButton.click();
+
+	const popout = document.getElementById('message-actions').parentElement;
+	const rect = popout.getBoundingClientRect();
+
+	const leftPosition = window.scrollX + e.pageX;
+	const xOffset = leftPosition + rect.width > window.innerWidth ? window.innerWidth - rect.width - leftPosition : 0;
+	const topPosition = window.scrollY + e.pageY;
+	const yOffset = topPosition + rect.height > window.innerHeight ? window.innerHeight - rect.height - topPosition : 0;
+
+	popout.style.position = 'fixed';
+	popout.style.left = `${leftPosition + xOffset}px`;
+	popout.style.top = `${topPosition + yOffset}px`;
 
 	const menu = document.getElementById('message-actions').firstChild;
 	const focusedClassName = getFocusClassNameUsingMenuItem(menu.firstChild);
@@ -145,7 +157,7 @@ document.body.addEventListener('contextmenu', e => {
 		}
 	} else {
 		// Add "add reaction" item to context menu
-		const reactButton = message.querySelector('[aria-label=\'Add Reaction\']');
+		const reactButton = message.querySelector('.wrapper-2aW0bm').firstElementChild;
 		const reactionItem = createMenuItem(menu, 'Add Reaction', reactButton.innerHTML);
 		menu.insertBefore(reactionItem, menu.firstChild);
 
@@ -162,8 +174,6 @@ document.body.addEventListener('contextmenu', e => {
 		reactionItem.addEventListener('focus', () => reactionItem.classList.add(focusedClassName));
 		reactionItem.addEventListener('blur', () => reactionItem.classList.remove(focusedClassName));
 	}
-
-	adjustMenuPosition(e, menu.parentElement.parentElement.parentElement);
 });
 
 function copyImage(url) {
@@ -223,18 +233,4 @@ function getFocusClassNameUsingMenuItem(menuItem) {
 	menuItem.blur();
 
 	return focusedClassName;
-}
-
-function adjustMenuPosition(e, menu) {
-	const margin = 20;
-	const overflowX = e.clientX + menu.offsetWidth - document.documentElement.clientWidth;
-	const overflowY = e.clientY + menu.offsetHeight - document.documentElement.clientHeight;
-	menu.style.position = 'fixed';
-	menu.style.top = overflowY <= 0
-		? e.clientY + 'px'
-		: (e.clientY - overflowY - margin) + 'px';
-	menu.style.left = overflowX <= 0
-		? e.clientX + 'px'
-		: (e.clientX - menu.offsetWidth) + 'px';
-	menu.style.right = '';
 }
