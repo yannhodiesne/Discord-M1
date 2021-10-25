@@ -10,8 +10,7 @@ Based on the original author's [apple-music-electron](https://github.com/17hoehb
 
  1. Head to the [releases page](https://github.com/yannhodiesne/Discord-M1/releases) and download the latest version.
  2. Open the .dmg file and copy the application **anywhere but not inside your Applications folder**.
- 3. Open a terminal, and type `sudo xattr -rd com.apple.quarantine ` (with a space at the end), then drag the Discord application onto the terminal before pressing Enter.
-> Running a command starting with `sudo` is usually a very bad idea, but I promise this one is safe.
+ 3. Open a terminal, and type `xattr -rd com.apple.quarantine ` (with a space at the end), then drag the Discord application onto the terminal before pressing Enter.
  4. Enter your password, and press Enter.
  5. Enjoy !
 
