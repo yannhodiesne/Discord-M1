@@ -4,24 +4,24 @@
   "main": "index.js",
   "description": "Discord Native for M1 Macs",
   "author": {
-    "name": "17hoehbr",
-    "email": "17hoehbr@gmail.com",
-    "url": "https://github.com/17hoehbr/Discord-m1"
+    "name": "Yann Hodiesne",
+    "email": "yann.hodiesne@viacesi.fr",
+    "url": "https://github.com/yannhodiesne/Discord-M1"
   },
   "contributors": [
     {
-      "name": "Yann Hodiesne",
-      "email": "yann.hodiesne@viacesi.fr",
-      "url": "https://github.com/yannhodiesne/Discord-m1"
+      "name": "17hoehbr",
+      "email": "17hoehbr@gmail.com",
+      "url": "https://github.com/17hoehbr/Discord-M1"
     }
   ],
-  "homepage": "https://github.com/yannhodiesne/Discord-m1",
+  "homepage": "https://github.com/yannhodiesne/Discord-M1",
   "keywords": [
     "Discord"
   ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://github.com:yannhodiesne/Discord-m1"
+    "url": "git+ssh://github.com:yannhodiesne/Discord-M1"
   },
   "license": "MIT",
   "scripts": {
@@ -48,7 +48,7 @@
     "webpack": "4.46.0"
   },
   "build": {
-    "appId": "Discord-m1",
+    "appId": "Discord-M1",
     "extends": null,
     "extraResources": [
       "discord-badge-count.js",
@@ -71,7 +71,7 @@
         {
           "provider": "github",
           "owner": "yannhodiesne",
-          "repo": "Discord-m1"
+          "repo": "Discord-M1"
         }
       ]
     }
