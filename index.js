@@ -85,9 +85,12 @@ function createWindow() {
 		});
 	});
 
-	win.webContents.on('new-window', (e, url) => {
-		e.preventDefault();
+	win.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url);
+
+		return {
+			action: 'deny',
+		};
 	});
 
 	// shows when ready
@@ -141,6 +144,9 @@ app.whenReady().then(() => {
 	autoUpdater.checkForUpdates();
 
 	setInterval(() => {
+		if (checkedForUpdate)
+			return;
+
 		autoUpdater.checkForUpdates();
 	}, 60 * 60 * 1000);
 	
