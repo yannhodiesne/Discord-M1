@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, shell, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const { hasScreenCapturePermission, openSystemPreferences } = require('mac-screen-capture-permissions');
 const { autoUpdater } = require('electron-updater');
@@ -108,8 +108,30 @@ function createWindow() {
 	});
 }
 
-autoUpdater.on('update-available', () => {
-	shell.openExternal('https://github.com/yannhodiesne/Discord-M1/releases');
+let checkedForUpdate = false;
+
+autoUpdater.on('update-available', ({ version }) => {
+	if (checkedForUpdate)
+		return;
+	
+	checkedForUpdate = true;
+
+	setTimeout(() => {
+		// Remind in 24 hours
+		checkedForUpdate = false;
+	}, 24 * 60 * 60 * 1000);
+
+	dialog.showMessageBox(win, {
+		type: 'info',
+		buttons: ['Yes', 'Later'],
+		defaultId: 0,
+		cancelId: 1,
+		title: 'Update available',
+		detail: `A new version of Discord-M1 is available, would you like to check it out on GitHub ?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
+	}).then(({ response }) => {
+		if (response === 0)
+			shell.openExternal('https://github.com/yannhodiesne/Discord-M1/releases');
+	});
 });
 
 app.whenReady().then(() => {
