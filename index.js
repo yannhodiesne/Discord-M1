@@ -1,6 +1,9 @@
 const { app, BrowserWindow, dialog, shell, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
-const { hasScreenCapturePermission, openSystemPreferences } = require('mac-screen-capture-permissions');
+const {
+	hasScreenCapturePermission,
+	openSystemPreferences,
+} = require('mac-screen-capture-permissions');
 const { autoUpdater } = require('electron-updater');
 
 const fs = require('fs');
@@ -15,16 +18,16 @@ function createWindow() {
 	// Window state
 	let mainWindowState = windowStateKeeper({
 		defaultWidth: 1000,
-		defaultHeight: 800
+		defaultHeight: 800,
 	});
 
 	// Create the browser window.
 	win = new BrowserWindow({
 		icon: path.join(__dirname, 'icon.icns'),
-		'x': mainWindowState.x,
-		'y': mainWindowState.y,
-		'width': mainWindowState.width,
-		'height': mainWindowState.height,
+		x: mainWindowState.x,
+		y: mainWindowState.y,
+		width: mainWindowState.width,
+		height: mainWindowState.height,
 		minWidth: 350,
 		minHeight: 100,
 		titleBarStyle: 'hiddenInset',
@@ -35,8 +38,8 @@ function createWindow() {
 			plugins: true,
 			nodeIntegration: false,
 			contextIsolation: false,
-			sandbox: true
-		}
+			sandbox: true,
+		},
 	});
 
 	// Load the preloads scripts
@@ -50,9 +53,11 @@ function createWindow() {
 		return true;
 	});
 
-	win.webContents.session.setPermissionRequestHandler(async (webContents, permission, callback) => {
-		callback(true);
-	});
+	win.webContents.session.setPermissionRequestHandler(
+		async (webContents, permission, callback) => {
+			callback(true);
+		}
+	);
 
 	// Let us register listeners on the window, so we can update the state
 	// automatically (the listeners will be removed when the window is closed)
@@ -62,24 +67,25 @@ function createWindow() {
 	win.setMenuBarVisibility(false);
 	// allows you to open toolbar by pressing alt
 	win.setAutoHideMenuBar(true);
-	
+
 	win.loadURL('https://discord.com/app', {
-		userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36',
+		userAgent:
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36',
 	});
 
 	// Inject custom JavaScript into Discord
 	const filesToInject = [
 		'discord-badge-count.js',
 		'discord-context-menu.js',
-		'discord-platform-osx.js'
+		'discord-platform-osx.js',
+		'discord-downloadapps-icon.js',
 	];
 
 	filesToInject.forEach((file) => {
 		let injectFilePath = path.join(process.resourcesPath, file);
 
-		if (!fs.existsSync(injectFilePath))
-			injectFilePath = `./${file}`;
-		
+		if (!fs.existsSync(injectFilePath)) injectFilePath = `./${file}`;
+
 		fs.readFile(injectFilePath, 'utf-8', (_, data) => {
 			win.webContents.executeJavaScript(data);
 		});
@@ -114,9 +120,8 @@ function createWindow() {
 let checkedForUpdate = false;
 
 autoUpdater.on('update-available', ({ version }) => {
-	if (checkedForUpdate)
-		return;
-	
+	if (checkedForUpdate) return;
+
 	checkedForUpdate = true;
 
 	setTimeout(() => {
@@ -124,17 +129,21 @@ autoUpdater.on('update-available', ({ version }) => {
 		checkedForUpdate = false;
 	}, 24 * 60 * 60 * 1000);
 
-	dialog.showMessageBox(win, {
-		type: 'info',
-		buttons: ['Yes', 'Later'],
-		defaultId: 0,
-		cancelId: 1,
-		title: 'Update available',
-		detail: `A new version of Discord-M1 is available, would you like to check it out on GitHub ?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
-	}).then(({ response }) => {
-		if (response === 0)
-			shell.openExternal('https://github.com/yannhodiesne/Discord-M1/releases');
-	});
+	dialog
+		.showMessageBox(win, {
+			type: 'info',
+			buttons: ['Yes', 'Later'],
+			defaultId: 0,
+			cancelId: 1,
+			title: 'Update available',
+			detail: `A new version of Discord-M1 is available, would you like to check it out on GitHub ?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
+		})
+		.then(({ response }) => {
+			if (response === 0)
+				shell.openExternal(
+					'https://github.com/yannhodiesne/Discord-M1/releases'
+				);
+		});
 });
 
 app.whenReady().then(() => {
@@ -144,12 +153,11 @@ app.whenReady().then(() => {
 	autoUpdater.checkForUpdates();
 
 	setInterval(() => {
-		if (checkedForUpdate)
-			return;
+		if (checkedForUpdate) return;
 
 		autoUpdater.checkForUpdates();
 	}, 60 * 60 * 1000);
-	
+
 	createWindow();
 });
 
@@ -158,9 +166,9 @@ app.on('activate', () => {
 	win.show();
 });
 
-/* 'before-quit' is emitted when Electron receives 
+/* 'before-quit' is emitted when Electron receives
  * the signal to exit and wants to start closing windows */
-app.on('before-quit', () => willQuitApp = true);
+app.on('before-quit', () => (willQuitApp = true));
 
 ipcMain.on('checkScreenPermission', async () => {
 	if (!hasScreenCapturePermission()) {
