@@ -4,8 +4,8 @@ function findDownloadAppsIconWrapper(stopElement) {
 
 	while (
 		downloadAppsSVG !== null &&
-		(downloadAppsSVG.parentElement !== null ||
-			downloadAppsSVG.parentElement === stopElement)
+		downloadAppsSVG.parentElement !== null &&
+		downloadAppsSVG.parentElement !== stopElement
 	) {
 		if (
 			downloadAppsSVG.parentElement.nodeName === 'DIV' &&
@@ -29,13 +29,15 @@ function findGuildSepeartor(startElement) {
 		}
 	}
 
-	for (let i = 0; i < parentOfGuildSeperator.children.length; i++) {
-		const child = parentOfGuildSeperator.children[i];
-		if (
-			child.firstChild &&
-			child.firstChild.className.includes('guildSeparator-')
-		) {
-			return child;
+	if (parentOfGuildSeperator) {
+		for (let i = 0; i < parentOfGuildSeperator.children.length; i++) {
+			const child = parentOfGuildSeperator.children[i];
+			if (
+				child.firstChild &&
+				child.firstChild.className.includes('guildSeparator-')
+			) {
+				return child;
+			}
 		}
 	}
 	return undefined;
