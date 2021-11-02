@@ -57,11 +57,11 @@ function tryRemoveAppIcon() {
 			const foundGuildSeperator = findGuildSepeartor(sideBar);
 
 			foundDownloadIcon !== undefined
-				? foundDownloadIcon.remove()
+				? foundDownloadIcon.hidden = true
 				: console.log('Download icon could not be found!');
 
 			foundGuildSeperator !== undefined
-				? foundGuildSeperator.remove()
+				? foundGuildSeperator.hidden = true
 				: console.log('Guild Seperator could not be found!');
 
 			if (

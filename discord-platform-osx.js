@@ -7,6 +7,9 @@ new MutationObserver(function (mutationList) {
 	});
 }).observe(document.documentElement, {
 	attributes: true,
-	characterData: false,
-	childList: false
+	characterData: true,
+	childList: true,
+	subtree: true,
+	attributeOldValue: true,
+	characterDataOldValue: true
 });
