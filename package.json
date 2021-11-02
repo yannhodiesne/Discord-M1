@@ -50,7 +50,8 @@
     "extraResources": [
       "discord-badge-count.js",
       "discord-context-menu.js",
-      "discord-platform-osx.js"
+      "discord-platform-osx.js",
+      "discord-downloadapps-icon.js"
     ],
     "mac": {
       "category": "public.app-category.social-networking",
