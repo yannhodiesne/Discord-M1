@@ -119,9 +119,8 @@ function createWindow() {
 
 let checkedForUpdate = false;
 
-autoUpdater.on('update-available', ({ version }) => {
+autoUpdater.on('update-downloaded', ({ version }) => {
 	if (checkedForUpdate) return;
-
 	checkedForUpdate = true;
 
 	setTimeout(() => {
@@ -129,27 +128,22 @@ autoUpdater.on('update-available', ({ version }) => {
 		checkedForUpdate = false;
 	}, 24 * 60 * 60 * 1000);
 
-	dialog
-		.showMessageBox(win, {
-			type: 'info',
-			buttons: ['Yes', 'Later'],
-			defaultId: 0,
-			cancelId: 1,
-			title: 'Update available',
-			detail: `A new version of Discord-M1 is available, would you like to check it out on GitHub ?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
-		})
-		.then(({ response }) => {
-			if (response === 0)
-				shell.openExternal(
-					'https://github.com/yannhodiesne/Discord-M1/releases'
-				);
-		});
+	dialog.showMessageBox(win, {
+		type: 'info',
+		buttons: ['Yes', 'Later'],
+		defaultId: 0,
+		cancelId: 1,
+		title: 'Update available',
+		detail: `A new version of Discord-M1 has been downloaded, would you like to install it now?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
+	}).then(({ response }) => {
+		if (response === 0) {
+			willQuitApp = true;
+			autoUpdater.quitAndInstall();
+		}
+	});
 });
 
 app.whenReady().then(() => {
-	autoUpdater.autoDownload = false;
-	autoUpdater.autoInstallOnAppQuit = false;
-
 	autoUpdater.checkForUpdates();
 
 	setInterval(() => {

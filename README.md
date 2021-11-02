@@ -14,12 +14,8 @@ An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://git
 # How to install
 
  1. Head to the [releases page](https://github.com/yannhodiesne/Discord-M1/releases) and download the latest version.
- 2. Open the .dmg file and copy the application **anywhere but not inside your Applications folder**.
- 3. Open a terminal, and type `xattr -rd com.apple.quarantine ` (with a space at the end), then drag the Discord application onto the terminal before pressing Enter.
- 4. Enjoy !
-
-> Steps 2 and 3 are mandatory because I did not pay Apple's 99$ fee to sign the application.  
-> Putting the application inside the Applications folder will break the screen sharing feature, as Apple restricts the permissions of unsigned apps.
+ 2. Open the .dmg (or .zip) file and copy the application inside the Applications folder.
+ 3. Enjoy !
 
 # Building from source
 
@@ -53,19 +49,6 @@ An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://git
 5. You can now find the `Discord-vX.X.X-arm64.dmg` file inside `Discord-M1/dist` and the `Discord.app` file inside `Discord-M1/dist/mac-arm64`
 
 > Alternatively you can run the app directly from source using `yarn start`, but it will be slower as it is intended for development purposes
-
-# FAQ
-
-## Why is macOS is telling me the application is damaged and cannot be opened?
-
-It happens because you dit not run, or made a mistake when running the terminal command inside the *How to install* section.  
-Follow the instructions inside the *How to install* section, and feel free to blame Apple for their developer's fee.
-
-## Why is the share screen button opening the System Preferences but I still cannot share my screen?
-
-It happens because you moved Discord inside the Applications folder.  
-Apple is restricting the permissions of unsigned applications inside of this folder, to ensure only trusted ones can interact with some parts of the system.  
-Follow the instructions inside the *How to install* section, and feel free to blame Apple for their developer's fee.
 
 # Credits
 

@@ -41,14 +41,17 @@
     "v8-compile-cache": "2.3.0"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "electron": "13.6.0",
     "electron-builder": "22.14.5",
+    "electron-notarize": "^1.1.1",
     "electron-webpack": "2.8.2",
     "eslint": "^8.1.0",
     "webpack": "4.46.0"
   },
   "build": {
-    "appId": "Discord-M1",
+    "productName": "Discord",
+    "appId": "yannhodiesne.Discord-M1",
     "extends": null,
     "extraResources": [
       "discord-badge-count.js",
@@ -59,7 +62,7 @@
       "category": "public.app-category.social-networking",
       "target": [
         {
-          "target": "dmg",
+          "target": "default",
           "arch": [
             "arm64"
           ]
@@ -73,8 +76,11 @@
           "owner": "yannhodiesne",
           "repo": "Discord-M1"
         }
-      ]
-    }
+      ],
+      "hardenedRuntime": true,
+      "entitlements": "./build/entitlements.mac.inherit.plist"
+    },
+    "afterSign": "./build/afterSignHook.js"
   },
   "packageManager": "yarn@3.0.2"
 }
