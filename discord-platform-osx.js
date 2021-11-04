@@ -1,15 +1,13 @@
-new MutationObserver(function (mutationList) {
-	mutationList.forEach((mutation) => {
-		if (mutation.attributeName == 'class' && mutation.target.classList.contains('platform-web')) {
-			mutation.target.classList.remove('platform-web');
-			mutation.target.classList.add('platform-osx');
-		}
-	});
-}).observe(document.documentElement, {
+onHTMLTagChange(); // Call instantly
+
+new MutationObserver(onHTMLTagChange).observe(document.documentElement, {
 	attributes: true,
-	characterData: true,
 	childList: true,
-	subtree: true,
-	attributeOldValue: true,
-	characterDataOldValue: true
 });
+
+function onHTMLTagChange() {
+	if (document.documentElement.classList.contains('platform-web')) {
+		document.documentElement.classList.remove('platform-web');
+		document.documentElement.classList.add('platform-osx');
+	}
+}

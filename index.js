@@ -1,10 +1,23 @@
-const { app, BrowserWindow, dialog, shell, ipcMain } = require('electron');
+const {
+	app,
+	BrowserWindow,
+	dialog,
+	shell,
+	ipcMain,
+	globalShortcut,
+} = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const {
 	hasScreenCapturePermission,
 	openSystemPreferences,
 } = require('mac-screen-capture-permissions');
 const { autoUpdater } = require('electron-updater');
+
+const reloadShortCuts = [
+	'CommandOrControl+R',
+	'CommandOrControl+Shift+R',
+	'F5',
+];
 
 const fs = require('fs');
 const path = require('path');
@@ -74,22 +87,7 @@ function createWindow() {
 	});
 
 	// Inject custom JavaScript into Discord
-	const filesToInject = [
-		'discord-badge-count.js',
-		'discord-context-menu.js',
-		'discord-platform-osx.js',
-		'discord-downloadapps-icon.js',
-	];
-
-	filesToInject.forEach((file) => {
-		let injectFilePath = path.join(process.resourcesPath, file);
-
-		if (!fs.existsSync(injectFilePath)) injectFilePath = `./${file}`;
-
-		fs.readFile(injectFilePath, 'utf-8', (_, data) => {
-			win.webContents.executeJavaScript(data);
-		});
-	});
+	injectJavasscripts();
 
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url);
@@ -108,6 +106,7 @@ function createWindow() {
 	win.on('close', (e) => {
 		if (willQuitApp) {
 			/* the user tried to quit the app */
+			globalShortcut.unregisterAll();
 			win = null;
 		} else {
 			/* the user only tried to close the window */
@@ -116,6 +115,10 @@ function createWindow() {
 		}
 	});
 }
+
+app.on('will-quit', () => {
+	globalShortcut.unregisterAll();
+});
 
 let checkedForUpdate = false;
 
@@ -128,22 +131,25 @@ autoUpdater.on('update-downloaded', ({ version }) => {
 		checkedForUpdate = false;
 	}, 24 * 60 * 60 * 1000);
 
-	dialog.showMessageBox(win, {
-		type: 'info',
-		buttons: ['Yes', 'Later'],
-		defaultId: 0,
-		cancelId: 1,
-		title: 'Update available',
-		detail: `A new version of Discord-M1 has been downloaded, would you like to install it now?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
-	}).then(({ response }) => {
-		if (response === 0) {
-			willQuitApp = true;
-			autoUpdater.quitAndInstall();
-		}
-	});
+	dialog
+		.showMessageBox(win, {
+			type: 'info',
+			buttons: ['Yes', 'Later'],
+			defaultId: 0,
+			cancelId: 1,
+			title: 'Update available',
+			detail: `A new version of Discord-M1 has been downloaded, would you like to install it now?\n\nCurrent version: ${app.getVersion()}\nLatest version: ${version}`,
+		})
+		.then(({ response }) => {
+			if (response === 0) {
+				willQuitApp = true;
+				autoUpdater.quitAndInstall();
+			}
+		});
 });
 
 app.whenReady().then(() => {
+	globalShortcut.registerAll(reloadShortCuts, onAppReload);
 	autoUpdater.checkForUpdates();
 
 	setInterval(() => {
@@ -161,7 +167,7 @@ app.on('activate', () => {
 });
 
 /* 'before-quit' is emitted when Electron receives
- * the signal to exit and wants to start closing windows */
+  the signal to exit and wants to start closing windows */
 app.on('before-quit', () => (willQuitApp = true));
 
 ipcMain.on('checkScreenPermission', async () => {
@@ -173,3 +179,28 @@ ipcMain.on('checkScreenPermission', async () => {
 ipcMain.on('updateBadgeCount', (e, args) => {
 	app.dock.setBadge(String(args.count));
 });
+
+function onAppReload() {
+	win.reload();
+	injectJavasscripts();
+	console.log('Done reloading and injecting again!');
+}
+
+function injectJavasscripts() {
+	const filesToInject = [
+		'discord-badge-count.js',
+		'discord-context-menu.js',
+		'discord-platform-osx.js',
+		'discord-downloadapps-icon.js',
+	];
+
+	filesToInject.forEach((file) => {
+		let injectFilePath = path.join(process.resourcesPath, file);
+
+		if (!fs.existsSync(injectFilePath)) injectFilePath = `./${file}`;
+
+		fs.readFile(injectFilePath, 'utf-8', (_, data) => {
+			win.webContents.executeJavaScript(data);
+		});
+	});
+}
