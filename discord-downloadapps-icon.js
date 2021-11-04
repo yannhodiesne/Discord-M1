@@ -32,9 +32,10 @@ function findGuildSepeartor(startElement) {
 	}
 
 	if (parentOfGuildSeperator) {
-		for (let i = 0; i < parentOfGuildSeperator.children.length; i++) {
+		for (let i = parentOfGuildSeperator.children.length - 1; i > 0; i--) {
 			const child = parentOfGuildSeperator.children[i];
 			if (
+				child &&
 				child.firstChild &&
 				child.firstChild.className.includes('guildSeparator-')
 			) {
@@ -45,7 +46,8 @@ function findGuildSepeartor(startElement) {
 	return undefined;
 }
 
-let removed = false;
+let foundDownloadIconRemoved = false;
+let foundGuildSeperatorRemoved = false;
 function tryRemoveAppIcon() {
 	console.log('-> Started to search for download button');
 	setTimeout(function () {
@@ -56,23 +58,18 @@ function tryRemoveAppIcon() {
 			const foundDownloadIcon = findDownloadAppsIconWrapper(sideBar);
 			const foundGuildSeperator = findGuildSepeartor(sideBar);
 
-			foundDownloadIcon !== undefined
-				? foundDownloadIcon.hidden = true
-				: console.log('Download icon could not be found!');
+			if (foundDownloadIcon) {
+				foundDownloadIcon.style.display = 'none';
+				foundDownloadIconRemoved = true;
+			}
 
-			foundGuildSeperator !== undefined
-				? foundGuildSeperator.hidden = true
-				: console.log('Guild Seperator could not be found!');
-
-			if (
-				foundDownloadIcon === undefined &&
-				foundGuildSeperator === undefined
-			) {
-				removed = true;
+			if (foundGuildSeperator) {
+				foundGuildSeperator.style.display = 'none';
+				foundGuildSeperatorRemoved = true;
 			}
 		}
 
-		if (!removed) {
+		if (!foundDownloadIconRemoved || !foundGuildSeperatorRemoved) {
 			tryRemoveAppIcon();
 		}
 	}, 250);
@@ -95,7 +92,8 @@ document.addEventListener('click', (e) => {
 				clicked.className
 			)
 		) {
-			removed = false;
+			foundDownloadIconRemoved = false;
+			foundGuildSeperatorRemoved = false;
 			tryRemoveAppIcon();
 		}
 	}
