@@ -13,11 +13,7 @@ const {
 } = require('mac-screen-capture-permissions');
 const { autoUpdater } = require('electron-updater');
 
-const reloadShortCuts = [
-	'CommandOrControl+R',
-	'CommandOrControl+Shift+R',
-	'F5',
-];
+const reloadShortCuts = ['CommandOrControl+R', 'CommandOrControl+Shift+R'];
 
 const fs = require('fs');
 const path = require('path');
