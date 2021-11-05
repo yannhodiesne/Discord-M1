@@ -50,6 +50,14 @@ An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://git
 
 > Alternatively you can run the app directly from source using `yarn start`, but it will be slower as it is intended for development purposes
 
+# Contributors
+
+This project exists thanks to all the people who contribute.
+
+<a href="https://github.com/yannhodiesne/Discord-M1/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=yannhodiesne/Discord-M1" />
+</a>
+
 # Credits
 
 Made with [Electron-Builder](https://www.electron.build/).
