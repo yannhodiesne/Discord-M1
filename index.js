@@ -2,9 +2,9 @@ const {
 	app,
 	BrowserWindow,
 	dialog,
+	Menu,
 	shell,
 	ipcMain,
-	globalShortcut,
 } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const {
@@ -12,9 +12,6 @@ const {
 	openSystemPreferences,
 } = require('mac-screen-capture-permissions');
 const { autoUpdater } = require('electron-updater');
-
-const reloadShortCuts = ['CommandOrControl+R', 'CommandOrControl+Shift+R'];
-
 const fs = require('fs');
 const path = require('path');
 
@@ -83,7 +80,7 @@ function createWindow() {
 	});
 
 	// Inject custom JavaScript into Discord
-	injectJavasscripts();
+	injectJavascript();
 
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url);
@@ -102,7 +99,6 @@ function createWindow() {
 	win.on('close', (e) => {
 		if (willQuitApp) {
 			/* the user tried to quit the app */
-			globalShortcut.unregisterAll();
 			win = null;
 		} else {
 			/* the user only tried to close the window */
@@ -111,10 +107,6 @@ function createWindow() {
 		}
 	});
 }
-
-app.on('will-quit', () => {
-	globalShortcut.unregisterAll();
-});
 
 let checkedForUpdate = false;
 
@@ -145,7 +137,7 @@ autoUpdater.on('update-downloaded', ({ version }) => {
 });
 
 app.whenReady().then(() => {
-	globalShortcut.registerAll(reloadShortCuts, onAppReload);
+	setAppMenu();
 	autoUpdater.checkForUpdates();
 
 	setInterval(() => {
@@ -178,11 +170,11 @@ ipcMain.on('updateBadgeCount', (e, args) => {
 
 function onAppReload() {
 	win.reload();
-	injectJavasscripts();
+	injectJavascript();
 	console.log('Done reloading and injecting again!');
 }
 
-function injectJavasscripts() {
+function injectJavascript() {
 	const filesToInject = [
 		'discord-badge-count.js',
 		'discord-context-menu.js',
@@ -199,4 +191,155 @@ function injectJavasscripts() {
 			win.webContents.executeJavaScript(data);
 		});
 	});
+}
+
+function setAppMenu() {
+	const menuTemplate = [
+		{
+			label: 'Discord',
+			submenu: [
+				{
+					role: 'about'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'services',
+					submenu: []
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'hide'
+				},
+				{
+					role: 'hideothers'
+				},
+				{
+					role: 'unhide'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					label: 'Reload Discord',
+					accelerator: 'CommandOrControl+R',
+					click: onAppReload,
+				},
+
+				{
+					label: 'Force-reload Discord',
+					accelerator: 'CommandOrControl+Shift+R',
+					click: onAppReload,
+				},
+				{
+					role: 'quit'
+				}
+			]
+		},
+		{
+			label: 'Edit',
+			submenu: [
+				{
+					role: 'undo'
+				},
+				{
+					role: 'redo'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'cut'
+				},
+				{
+					role: 'copy'
+				},
+				{
+					role: 'paste'
+				},
+				{
+					role: 'pasteandmatchstyle'
+				},
+				{
+					role: 'delete'
+				},
+				{
+					role: 'selectall'
+				}
+			]
+		},
+		{
+			label: 'View',
+			submenu: [
+				{
+					role: 'toggledevtools'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'resetzoom'
+				},
+				{
+					role: 'zoomin'
+				},
+				{
+					role: 'zoomout'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'togglefullscreen'
+				}
+			]
+		},
+		{
+			role: 'window',
+			submenu: [
+				{
+					role: 'minimize'
+				},
+				{
+					role: 'close'
+				}
+			]
+		},
+		{
+			role: 'help',
+			submenu: [
+				{
+					label: 'Learn More',
+					click () {
+						shell.openExternal('https://electron.atom.io');
+					}
+				},
+				{
+					label: 'Documentation',
+					click () {
+						shell.openExternal(
+							`https://github.com/electron/electron/tree/v${process.versions.electron}/docs#readme`
+						);
+					}
+				},
+				{
+					label: 'Community Discussions',
+					click () {
+						shell.openExternal('https://discuss.atom.io/c/electron');
+					}
+				},
+				{
+					label: 'Search Issues',
+					click () {
+						shell.openExternal('https://github.com/electron/electron/issues');
+					}
+				}
+			]
+		}
+	];
+	
+	Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 }
