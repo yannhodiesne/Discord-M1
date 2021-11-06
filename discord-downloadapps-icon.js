@@ -49,7 +49,6 @@ function findGuildSepeartor(startElement) {
 let foundDownloadIconRemoved = false;
 let foundGuildSeperatorRemoved = false;
 function tryRemoveAppIcon() {
-	console.log('-> Started to search for download button');
 	setTimeout(function () {
 		// Getting the top element in the SideBar and using that as a stopper for the loops.
 		// This will make sure that if we cant find the data, then it wont run forever.

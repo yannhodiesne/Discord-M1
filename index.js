@@ -6,14 +6,29 @@ const {
 	shell,
 	ipcMain,
 } = require('electron');
+
 const windowStateKeeper = require('electron-window-state');
+
 const {
 	hasScreenCapturePermission,
 	openSystemPreferences,
 } = require('mac-screen-capture-permissions');
+
 const { autoUpdater } = require('electron-updater');
+const Store = require('electron-store');
+
 const fs = require('fs');
 const path = require('path');
+
+const configSchema = {
+	client: {
+		type: 'string',
+		default: 'stable',
+		enum: ['stable', 'ptb', 'canary'],
+	},
+};
+
+const config = new Store({ schema: configSchema });
 
 // https://discuss.atom.io/t/how-to-catch-the-event-of-clicking-the-app-windows-close-button-in-electron-app/21425
 let win;
@@ -74,13 +89,7 @@ function createWindow() {
 	// allows you to open toolbar by pressing alt
 	win.setAutoHideMenuBar(true);
 
-	win.loadURL('https://discord.com/app', {
-		userAgent:
-			'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36',
-	});
-
-	// Inject custom JavaScript into Discord
-	injectJavascript();
+	loadDiscordURL();
 
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url);
@@ -174,6 +183,29 @@ function onAppReload() {
 	console.log('Done reloading and injecting again!');
 }
 
+function loadDiscordURL() {
+	let url;
+	
+	switch (config.get('client')) {
+	case 'canary':
+		url = 'https://canary.discord.com/app';
+		break;
+	case 'ptb':
+		url = 'https://ptb.discord.com/app';
+		break;
+	default:
+		url = 'https://discord.com/app';
+	}
+	
+	win.loadURL(url, {
+		userAgent:
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+	});
+
+	// Inject custom JavaScript into Discord
+	injectJavascript();
+}
+
 function injectJavascript() {
 	const filesToInject = [
 		'discord-badge-count.js',
@@ -191,6 +223,14 @@ function injectJavascript() {
 			win.webContents.executeJavaScript(data);
 		});
 	});
+}
+
+function setDiscordChannel(channel) {
+	if (config.get('client') === channel)
+		return;
+
+	config.set('client', channel);
+	loadDiscordURL();
 }
 
 function setAppMenu() {
@@ -222,6 +262,29 @@ function setAppMenu() {
 				},
 				{
 					type: 'separator'
+				},
+				{
+					label: 'Switch to another channel',
+					submenu: [
+						{
+							label: 'Stable',
+							type: 'radio',
+							checked: config.get('client') === 'stable',
+							click: () => setDiscordChannel('stable'),
+						},
+						{
+							label: 'Public test build (PTB)',
+							type: 'radio',
+							checked: config.get('client') === 'ptb',
+							click: () => setDiscordChannel('ptb'),
+						},
+						{
+							label: 'Canary',
+							type: 'radio',
+							checked: config.get('client') === 'canary',
+							click: () => setDiscordChannel('canary'),
+						},
+					],
 				},
 				{
 					label: 'Reload Discord',
@@ -312,30 +375,12 @@ function setAppMenu() {
 			role: 'help',
 			submenu: [
 				{
-					label: 'Learn More',
-					click () {
-						shell.openExternal('https://electron.atom.io');
-					}
+					label: 'Discord-M1 on Github',
+					click: () => shell.openExternal('https://github.com/yannhodiesne/Discord-M1'),
 				},
 				{
-					label: 'Documentation',
-					click () {
-						shell.openExternal(
-							`https://github.com/electron/electron/tree/v${process.versions.electron}/docs#readme`
-						);
-					}
-				},
-				{
-					label: 'Community Discussions',
-					click () {
-						shell.openExternal('https://discuss.atom.io/c/electron');
-					}
-				},
-				{
-					label: 'Search Issues',
-					click () {
-						shell.openExternal('https://github.com/electron/electron/issues');
-					}
+					label: 'Report an issue',
+					click: () => shell.openExternal('https://github.com/yannhodiesne/Discord-M1/issues'),
 				}
 			]
 		}

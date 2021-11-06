@@ -32,6 +32,7 @@
     "publish": "electron-builder --publish always"
   },
   "dependencies": {
+    "electron-store": "^8.0.1",
     "electron-updater": "4.6.1",
     "electron-window-state": "5.0.3",
     "mac-screen-capture-permissions": "^2.0.0"
