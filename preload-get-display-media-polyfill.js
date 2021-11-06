@@ -25,7 +25,8 @@ const openScreenSelection = async (resolve, reject) => {
 			titleBarStyle: 'hiddenInset',
 			webPreferences: {
 				nodeIntegration: true,
-				contextIsolation: false
+				contextIsolation: false,
+				enableBlinkFeatures: 'CSSColorSchemeUARendering',
 			},
 		});
 
@@ -49,18 +50,16 @@ const openScreenSelection = async (resolve, reject) => {
 	}
 };
 
-window.navigator.mediaDevices.getDisplayMedia = () => {
-	return new Promise((resolve, reject) => {
-		ipcRenderer.invoke('checkScreenPermission').then((hasPermission) => {
-			if (hasPermission) {
+if (window.navigator.mediaDevices) {
+	window.navigator.mediaDevices.getDisplayMedia = () => {
+		return new Promise((resolve, reject) => {
+			ipcRenderer.send('checkScreenPermission', {});
+
+			if (remote.systemPreferences.getMediaAccessStatus('screen') === 'granted') {
 				openScreenSelection(resolve, reject);
 			} else {
 				reject(new Error('Discord does not have the permission to share the screen'));
 			}
-		}).catch((err) => {
-			console.error('Screen sharing permission check failed with ', err);
-
-			reject(new Error('An error occured when trying to check screen sharing permissions'));
 		});
-	});
-};
+	};
+}

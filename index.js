@@ -195,13 +195,10 @@ app.on('activate', () => {
   the signal to exit and wants to start closing windows */
 app.on('before-quit', () => (willQuitApp = true));
 
-ipcMain.handle('checkScreenPermission', async () => {
+ipcMain.on('checkScreenPermission', async () => {
 	if (!hasScreenCapturePermission()) {
 		await openSystemPreferences();
-		return false;
 	}
-
-	return true;
 });
 
 ipcMain.on('updateBadgeCount', (e, args) => {
