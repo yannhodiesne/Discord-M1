@@ -31,6 +31,17 @@ const configSchema = {
 
 const config = new Store({ schema: configSchema });
 
+function getDiscordURL() {
+	switch (config.get('client')) {
+	case 'canary':
+		return 'https://canary.discord.com';
+	case 'ptb':
+		return 'https://ptb.discord.com';
+	default:
+		return 'https://discord.com';
+	}
+}
+
 contextMenu({
 	showCopyImage: false,
 	showInspectElement: false,
@@ -67,6 +78,7 @@ function createWindow() {
 			contextIsolation: false,
 			sandbox: true,
 			spellcheck: true,
+			enableRemoteModule: true,
 		},
 	});
 
@@ -99,6 +111,15 @@ function createWindow() {
 	loadDiscordURL();
 
 	win.webContents.setWindowOpenHandler(({ url }) => {
+		if (url === `${getDiscordURL()}/popout`) {
+			return {
+				action: 'allow',
+				overrideBrowserWindowOptions: {
+					titleBarStyle: 'default',
+				},
+			};
+		}
+
 		shell.openExternal(url);
 
 		return {
@@ -174,10 +195,13 @@ app.on('activate', () => {
   the signal to exit and wants to start closing windows */
 app.on('before-quit', () => (willQuitApp = true));
 
-ipcMain.on('checkScreenPermission', async () => {
+ipcMain.handle('checkScreenPermission', async () => {
 	if (!hasScreenCapturePermission()) {
 		await openSystemPreferences();
+		return false;
 	}
+
+	return true;
 });
 
 ipcMain.on('updateBadgeCount', (e, args) => {
@@ -191,18 +215,7 @@ function onAppReload() {
 }
 
 function loadDiscordURL() {
-	let url;
-	
-	switch (config.get('client')) {
-	case 'canary':
-		url = 'https://canary.discord.com/app';
-		break;
-	case 'ptb':
-		url = 'https://ptb.discord.com/app';
-		break;
-	default:
-		url = 'https://discord.com/app';
-	}
+	let url = `${getDiscordURL()}/app`;
 	
 	win.loadURL(url, {
 		userAgent:
