@@ -1,6 +1,6 @@
 {
   "name": "Discord",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "main": "index.js",
   "description": "Discord Native for M1 Macs",
   "author": {
