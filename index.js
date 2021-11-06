@@ -74,10 +74,7 @@ function createWindow() {
 	// allows you to open toolbar by pressing alt
 	win.setAutoHideMenuBar(true);
 
-	win.loadURL('https://discord.com/app', {
-		userAgent:
-			'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36',
-	});
+	switchPlatforms();
 
 	// Inject custom JavaScript into Discord
 	injectJavascript();
@@ -106,6 +103,37 @@ function createWindow() {
 			win.hide();
 		}
 	});
+}
+
+/**
+ * The User Agent to use in this window
+ *
+ * @type {string} The User Agent
+ */
+const userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36';
+
+let currentPlatform = 'stable';
+
+/**
+ * Switches the current platform to a different one.
+ * By default, it boots up stable, but we can switch.
+ *
+ * @param platform The platform, ptb or canary, to switch to
+ */
+function switchPlatforms(platform = null) {
+	if (platform == null) {
+		win.loadURL('https://discord.com/app', {
+			userAgent: userAgent,
+		});
+	} else {
+		win.loadURL(`https://${platform}.discord.com/app`, {
+			userAgent: userAgent,
+		});
+	}
+
+	currentPlatform = platform == null ? 'stable' : platform;
+
+	setAppMenu();
 }
 
 let checkedForUpdate = false;
@@ -294,7 +322,36 @@ function setAppMenu() {
 				},
 				{
 					role: 'togglefullscreen'
-				}
+				},
+				{
+					type: 'separator'
+				},
+				{
+					label: 'Switch Platforms',
+					submenu: [
+						{
+							label: 'Switch to Stable',
+							click () {
+								switchPlatforms();
+							},
+							enabled: currentPlatform !== 'stable'
+						},
+						{
+							label: 'Switch to PTB (UNSUPPORTED)',
+							click () {
+								switchPlatforms('ptb');
+							},
+							enabled: currentPlatform !== 'ptb'
+						},
+						{
+							label: 'Switch to Canary (UNSUPPORTED)',
+							click () {
+								switchPlatforms('canary');
+							},
+							enabled: currentPlatform !== 'canary'
+						}
+					]
+				},
 			]
 		},
 		{
@@ -312,34 +369,22 @@ function setAppMenu() {
 			role: 'help',
 			submenu: [
 				{
-					label: 'Learn More',
+					label: 'Discord Help',
 					click () {
-						shell.openExternal('https://electron.atom.io');
+						shell.openExternal('https://support.discord.com');
 					}
 				},
 				{
-					label: 'Documentation',
+					label: 'Report Issues',
 					click () {
 						shell.openExternal(
-							`https://github.com/electron/electron/tree/v${process.versions.electron}/docs#readme`
+							'https://github.com/yannhodiesne/Discord-M1/issues'
 						);
-					}
-				},
-				{
-					label: 'Community Discussions',
-					click () {
-						shell.openExternal('https://discuss.atom.io/c/electron');
-					}
-				},
-				{
-					label: 'Search Issues',
-					click () {
-						shell.openExternal('https://github.com/electron/electron/issues');
 					}
 				}
 			]
 		}
 	];
-	
+
 	Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 }
