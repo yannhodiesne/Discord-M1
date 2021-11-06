@@ -16,6 +16,7 @@ const {
 
 const { autoUpdater } = require('electron-updater');
 const Store = require('electron-store');
+const contextMenu = require('electron-context-menu');
 
 const fs = require('fs');
 const path = require('path');
@@ -29,6 +30,11 @@ const configSchema = {
 };
 
 const config = new Store({ schema: configSchema });
+
+contextMenu({
+	showCopyImage: false,
+	showInspectElement: false,
+});
 
 // https://discuss.atom.io/t/how-to-catch-the-event-of-clicking-the-app-windows-close-button-in-electron-app/21425
 let win;
@@ -60,6 +66,7 @@ function createWindow() {
 			nodeIntegration: false,
 			contextIsolation: false,
 			sandbox: true,
+			spellcheck: true,
 		},
 	});
 

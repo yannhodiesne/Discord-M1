@@ -32,18 +32,6 @@ document.body.addEventListener('contextmenu', e => {
 
 	moreButton.click();
 
-	const popout = document.getElementById('message-actions').parentElement;
-	const rect = popout.getBoundingClientRect();
-
-	const leftPosition = window.scrollX + e.pageX;
-	const xOffset = leftPosition + rect.width > window.innerWidth ? window.innerWidth - rect.width - leftPosition : 0;
-	const topPosition = window.scrollY + e.pageY;
-	const yOffset = topPosition + rect.height > window.innerHeight ? window.innerHeight - rect.height - topPosition : 0;
-
-	popout.style.position = 'fixed';
-	popout.style.left = `${leftPosition + xOffset}px`;
-	popout.style.top = `${topPosition + yOffset}px`;
-
 	const menu = document.getElementById('message-actions').firstChild;
 	const focusedClassName = getFocusClassNameUsingMenuItem(menu.firstChild);
 
@@ -174,6 +162,18 @@ document.body.addEventListener('contextmenu', e => {
 		reactionItem.addEventListener('focus', () => reactionItem.classList.add(focusedClassName));
 		reactionItem.addEventListener('blur', () => reactionItem.classList.remove(focusedClassName));
 	}
+
+	const popout = document.getElementById('message-actions').parentElement;
+	const rect = popout.getBoundingClientRect();
+
+	const leftPosition = window.scrollX + e.pageX;
+	const xOffset = leftPosition + rect.width > window.innerWidth ? window.innerWidth - rect.width - leftPosition : 0;
+	const topPosition = window.scrollY + e.pageY;
+	const yOffset = topPosition + rect.height > window.innerHeight ? window.innerHeight - rect.height - topPosition : 0;
+
+	popout.style.position = 'fixed';
+	popout.style.left = `${leftPosition + xOffset}px`;
+	popout.style.top = `${topPosition + yOffset}px`;
 });
 
 function copyImage(url) {
