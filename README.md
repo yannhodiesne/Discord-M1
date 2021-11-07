@@ -10,6 +10,7 @@ An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://git
  - Screen sharing (entire screens and individual windows)
  - Badges (notifications count on the Discord icon)
  - Right-clicking to bring the context menu
+ - Video calls popout (inside another window)
 
 # How to install
 
