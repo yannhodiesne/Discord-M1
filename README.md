@@ -51,6 +51,17 @@ An ARM64 native Discord desktop app for M1 Macs, based on [17hoehbr](https://git
 
 > Alternatively you can run the app directly from source using `yarn start`, but it will be slower as it is intended for development purposes
 
+# FAQ
+
+## Screen sharing is opening the System Preferences even when Discord already has the permission
+
+As Discord-M1 and the official Discord client share the same name, you need to ensure both of them (or at least Discord-M1) has the permission to share your screen.  
+
+## Screen sharing still does not work!!!!
+
+On some very rare occasions, macOS can become confused by thinking the screen sharing permission has been granted to Discord-M1, when it is in fact still pointing to the official client.  
+To work around this bug, you can reset the screen sharing rights as pointed by @Hasuuka in [this comment](https://github.com/yannhodiesne/Discord-M1/issues/23#issuecomment-963147664): `sudo tccutil reset ScreenCapture`
+
 # Contributors
 
 This project exists thanks to all the people who contribute.
