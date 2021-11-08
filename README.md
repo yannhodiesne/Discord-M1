@@ -60,7 +60,7 @@ As Discord-M1 and the official Discord client share the same name, you need to e
 ## Screen sharing still does not work!!!!
 
 On some very rare occasions, macOS can become confused by thinking the screen sharing permission has been granted to Discord-M1, when it is in fact still pointing to the official client.  
-To work around this bug, you can reset the screen sharing rights as pointed by @Hasuuka in [this comment](https://github.com/yannhodiesne/Discord-M1/issues/23#issuecomment-963147664): `sudo tccutil reset ScreenCapture`
+To work around this bug, you can reset the screen sharing rights as pointed by [Hasuuka](https://github.com/Hasuuka) in [this comment](https://github.com/yannhodiesne/Discord-M1/issues/23#issuecomment-963147664): `sudo tccutil reset ScreenCapture`
 
 # Contributors
 
