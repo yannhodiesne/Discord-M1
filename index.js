@@ -47,6 +47,9 @@ contextMenu({
 	showInspectElement: false,
 });
 
+// https://github.com/electron/electron/issues/18253#issuecomment-589542934
+app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService');
+
 // https://discuss.atom.io/t/how-to-catch-the-event-of-clicking-the-app-windows-close-button-in-electron-app/21425
 let win;
 let willQuitApp;
